@@ -15,4 +15,6 @@ export const setupRoutes = (di: DI) => {
         "/api/1.0/messages/groups/:groupId",
         messageActions.getMessagesByGroupId
     );
+
+    di.express.ws("/", (ws, req) => {});
 };

@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { DI } from "../../di";
+import * as chat from "../chat/logic";
 import { GroupId } from "../group/types";
 import * as logic from "./logic";
 import { NewMessage } from "./types";
@@ -18,6 +19,7 @@ export const createActions = (di: DI) => {
     const addMessage = async (request: Request, response: Response) => {
         const newMessage = request.body as NewMessage;
         const messageId = await logic.addMessage(di, newMessage);
+        await chat.replyNewMessage(di, newMessage.groupId, messageId);
         response.json({ id: messageId });
     };
 

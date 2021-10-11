@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 
-import { Groups } from "components/organisms/Groups";
+import { Groups } from "components/organisms/stupids/Groups";
 import * as routes from "navigation/routes";
 import { GroupId } from "types/group";
 import groups from "state/groups";
@@ -11,7 +11,7 @@ interface Props {
     selected: GroupId;
 }
 
-export const GroupsContainer: React.VFC<Props> = observer(({ selected }) => {
+export const SmartGroups: React.VFC<Props> = observer(({ selected }) => {
     const history = useHistory();
     const [newGroupTitle, setNewGroupTitle] = useState("");
 

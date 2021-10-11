@@ -4,6 +4,7 @@ import { render } from "react-dom";
 import { App } from "./components/App";
 import * as serviceWorker from "./serviceWorker";
 import { getRootElement } from "./dom";
+import "./services/web-api/webSocket";
 
 render(
     <StrictMode>

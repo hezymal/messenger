@@ -3,9 +3,9 @@ import { matchPath, useLocation } from "react-router-dom";
 import * as navigationPatterns from "navigation/patterns";
 import { GroupId } from "types/group";
 import { ChatTemplate } from "../templates/ChatTemplate";
-import { MessagesContainer } from "../containers/MessagesContainer";
-import { InputMessageContainer } from "../containers/InputMessageContainer";
-import { GroupsContainer } from "../containers/GroupsContainer";
+import { SmartMessages } from "components/organisms/smarts/SmartMessages";
+import { SmartInputMessage } from "components/organisms/smarts/SmartInputMessage";
+import { SmartGroups } from "components/organisms/smarts/SmartGroups";
 
 const getGroupIdFromPath = (path: string) => {
     const mathes = matchPath<{ id: GroupId }>(path, {
@@ -21,9 +21,9 @@ export const ChatPage: React.FC = () => {
 
     return (
         <ChatTemplate
-            groups={<GroupsContainer selected={groupId} />}
-            messages={<MessagesContainer groupId={groupId} />}
-            inputMessage={<InputMessageContainer groupId={groupId} />}
+            groups={<SmartGroups selected={groupId} />}
+            messages={<SmartMessages groupId={groupId} />}
+            inputMessage={<SmartInputMessage groupId={groupId} />}
         />
     );
 };

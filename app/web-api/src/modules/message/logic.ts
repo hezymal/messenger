@@ -1,14 +1,20 @@
-import { Document } from "mongodb";
+import { Document, ObjectId } from "mongodb";
 import { DI } from "../../di";
 import { GroupId } from "../group/types";
-import { Message, NewMessage } from "./types";
+import { Message, MessageId, NewMessage } from "./types";
 
-const mapDocumentToMessage = (document: Document): Message => ({
-    id: document._id,
-    text: document.text,
-    owner: document.owner,
-    groupId: document.groupId,
-});
+const mapDocumentToMessage = (document: Document | null): Message | null => {
+    if (!document) {
+        return null;
+    }
+
+    return {
+        id: document._id,
+        text: document.text,
+        owner: document.owner,
+        groupId: document.groupId,
+    };
+};
 
 const mapNewMessageToDocument = (newMessage: NewMessage): Document => ({
     text: newMessage.text,
@@ -24,6 +30,15 @@ export const getMessagesByGroupId = async (di: DI, groupId: GroupId) => {
         .toArray();
 
     return documents.map(mapDocumentToMessage);
+};
+
+export const getMessageById = async (di: DI, id: MessageId) => {
+    const document = await di.mongo
+        .db()
+        .collection("message")
+        .findOne({ _id: new ObjectId(id) });
+
+    return mapDocumentToMessage(document);
 };
 
 export const addMessage = async (di: DI, newMessage: NewMessage) => {

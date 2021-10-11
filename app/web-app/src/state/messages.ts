@@ -1,34 +1,47 @@
-import { makeObservable, observable, flow } from "mobx";
-import { getMessagesByGroupId, addMessage } from "services/web-api";
+import { makeObservable, observable, flow, action } from "mobx";
+import { Subscription } from "rxjs";
+
+import { getMessagesByGroupId, addMessage, ws } from "services/web-api";
 import { GroupId } from "types/group";
 import { Message, NewMessage } from "types/message";
 import { AsyncResult } from "utils/types";
 
 export type State = "initialize" | "pending" | "creation" | "error" | "done";
 
+interface WSPayload {
+    message: Message;
+}
+
 class Messages {
     public state: State;
-    public data: Message[] | null;
-
+    public data: Message[];
     private groupId: GroupId | null;
+    private groupSubscription: Subscription | null;
 
     constructor() {
         this.state = "initialize";
-        this.data = null;
-
+        this.data = [];
         this.groupId = null;
+        this.groupSubscription = null;
+
+        this.subscribeToGroup = this.subscribeToGroup.bind(this);
+        this.addMessage = this.addMessage.bind(this);
 
         makeObservable(this, {
             state: observable,
             data: observable,
-            fetch: flow,
-            add: flow,
+            changeGroup: flow,
+            create: flow,
+            addMessage: action,
         });
     }
 
-    *fetch(groupId: GroupId) {
+    public *changeGroup(groupId: GroupId) {
         this.state = "pending";
+
         this.groupId = groupId;
+        this.groupSubscription?.unsubscribe();
+        this.groupSubscription = this.subscribeToGroup(groupId);
 
         try {
             const response: AsyncResult<typeof getMessagesByGroupId> =
@@ -50,7 +63,7 @@ class Messages {
         }
     }
 
-    *add(newMessage: NewMessage) {
+    public *create(newMessage: NewMessage) {
         if (this.state !== "done") {
             return;
         }
@@ -58,20 +71,25 @@ class Messages {
         this.state = "creation";
 
         try {
-            const response: AsyncResult<typeof addMessage> = yield addMessage(
-                newMessage
-            );
-            this.data!.push({
-                id: response.data.id,
-                ...newMessage,
-            });
-
+            yield addMessage(newMessage);
             this.state = "done";
         } catch (e) {
             console.error(e);
 
             this.state = "error";
         }
+    }
+
+    public addMessage(message: Message) {
+        this.data.push(message);
+    }
+
+    private subscribeToGroup(groupId: GroupId) {
+        const messageType = `/chat/groups/${groupId}/messages`;
+
+        return ws.subscribeToMessage<WSPayload>(messageType, (payload) => {
+            this.addMessage(payload.message);
+        });
     }
 }
 
