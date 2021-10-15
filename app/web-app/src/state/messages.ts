@@ -1,9 +1,9 @@
 import { makeObservable, observable, flow, action } from "mobx";
 import { Subscription } from "rxjs";
 
-import { getMessagesByGroupId, addMessage, ws } from "services/web-api";
-import { GroupId } from "types/group";
-import { Message, NewMessage } from "types/message";
+import { getMessagesByGroupId, addMessage, subscribeToWebSocket } from "services/webApi";
+import { GroupId } from "logic/group";
+import { Message, NewMessage } from "logic/message";
 import { AsyncResult } from "utils/types";
 
 export type State = "initialize" | "pending" | "creation" | "error" | "done";
@@ -87,7 +87,7 @@ class Messages {
     private subscribeToGroup(groupId: GroupId) {
         const messageType = `/chat/groups/${groupId}/messages`;
 
-        return ws.subscribeToMessage<WSPayload>(messageType, (payload) => {
+        return subscribeToWebSocket<WSPayload>(messageType, (payload) => {
             this.addMessage(payload.message);
         });
     }

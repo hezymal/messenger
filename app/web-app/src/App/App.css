@@ -1,0 +1,24 @@
+@import "design/fonts/ubuntu/stylesheet.css";
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    font-family: Ubuntu;
+    font-size: 14px;
+}
+
+html, body, #root {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    line-height: 20px;
+}
+
+#context-menu {
+    position: absolute;
+    z-index: 1;
+}

@@ -1,4 +1,4 @@
-import { GroupId } from "types/group";
+import { GroupId } from "logic/group";
 
 export const chat = () => `/chat`;
 

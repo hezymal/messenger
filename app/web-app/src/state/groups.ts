@@ -1,6 +1,6 @@
 import { makeObservable, observable, flow } from "mobx";
-import { addGroup, getGroups, removeGroup } from "services/web-api";
-import { Group, GroupId, NewGroup } from "types/group";
+import { addGroup, getGroups, removeGroup } from "services/webApi";
+import { Group, GroupId, NewGroup } from "logic/group";
 import { AsyncResult } from "utils/types";
 
 export type GroupsState =
