@@ -4,6 +4,7 @@ import styled, { css } from "styled-components";
 import { LinearSpinner } from "design/components/LinearSpinner";
 import { borders, colors, pt } from "design/styles";
 import { Message, MessageOwner } from "logic/message";
+import { debounce } from "lodash";
 
 interface Props {
     messages: Message[];
@@ -62,13 +63,15 @@ const AutoScrollableBlock: React.FC = ({ children }) => {
             throw new Error("Elements is not set");
         }
 
-        const resizeObserver = new ResizeObserver(() => {
+        const handleResize = debounce(() => {
             withScroll.scrollTop = withScroll.scrollHeight;
-        });
-        resizeObserver.observe(noScroll);
+        }, 1000);
+
+        const noScrollObserver = new ResizeObserver(handleResize);
+        noScrollObserver.observe(noScroll);
 
         return () => {
-            resizeObserver.disconnect();
+            noScrollObserver.disconnect();
         };
     }, []);
 

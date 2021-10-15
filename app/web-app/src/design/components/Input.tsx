@@ -3,7 +3,7 @@ import styled, { css } from "styled-components";
 
 import { borders, colors, pt } from "design/styles";
 
-interface Props {
+export interface InputProps {
     value: string;
     borderRight?: boolean;
     placeholder?: string;
@@ -47,7 +47,7 @@ const Element = styled.input<ElementProps>`
     }
 `;
 
-export const Input: React.VFC<Props> = ({
+export const Input: React.VFC<InputProps> = ({
     placeholder,
     value,
     borderRight = true,
