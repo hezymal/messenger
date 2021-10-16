@@ -14,6 +14,7 @@ interface Props {
 export const SmartGroups: React.VFC<Props> = observer(({ selected }) => {
     const history = useHistory();
     const [newGroupTitle, setNewGroupTitle] = useState("");
+    const [showNewGroupInput, setShowNewGroupInput] = useState(false);
 
     useEffect(() => {
         groups.fetch();
@@ -23,8 +24,19 @@ export const SmartGroups: React.VFC<Props> = observer(({ selected }) => {
         history.push(routes.chatGroupById(groupId));
     };
 
-    const handleNewGroupSubmit = () => {
-        groups.add({ title: newGroupTitle });
+    const handleNewGroupSubmit = async () => {
+        setShowNewGroupInput(false);
+        if (!newGroupTitle) {
+            return;
+        }
+
+        try {
+            await groups.add({ title: newGroupTitle });
+            setNewGroupTitle("");
+        } catch (error) {
+            console.error(error);
+            setShowNewGroupInput(true);
+        }
     };
 
     const handleGroupRemove = async (groupId: GroupId) => {
@@ -33,6 +45,10 @@ export const SmartGroups: React.VFC<Props> = observer(({ selected }) => {
         if (groupId === selected) {
             history.push(routes.chat());
         }
+    };
+
+    const handleAddGroup = () => {
+        setShowNewGroupInput(true);
     };
 
     const data = groups.data || [];
@@ -44,10 +60,12 @@ export const SmartGroups: React.VFC<Props> = observer(({ selected }) => {
             groups={data}
             isLoading={isLoading}
             newGroupTitle={newGroupTitle}
+            showNewGroupInput={showNewGroupInput}
             onGroupSelect={handleGroupSelect}
             onNewGroupTitleChange={setNewGroupTitle}
             onNewGroupSubmit={handleNewGroupSubmit}
             onGroupRemove={handleGroupRemove}
+            onAddGroup={handleAddGroup}
         />
     );
 });

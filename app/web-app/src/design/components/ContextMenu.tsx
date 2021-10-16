@@ -28,6 +28,11 @@ interface ContextMenuTriggerProps {
     menuId: string;
     elementId: string;
     height?: number;
+    children: (isMenuShow: boolean) => ReactNode;
+}
+
+interface ContextMenuTriggerState {
+    isMenuShow: boolean;
 }
 
 interface ContextMenuProps {
@@ -81,7 +86,10 @@ const MenuItemIcon = styled(Icon)`
 
 const menuIdToElementIdStore: MenuIdToElementIdStore = {};
 
-export class ContextMenuTrigger extends Component<ContextMenuTriggerProps> {
+export class ContextMenuTrigger extends Component<
+    ContextMenuTriggerProps,
+    ContextMenuTriggerState
+> {
     private menuElement: HTMLElement | null;
 
     constructor(props: ContextMenuTriggerProps) {
@@ -90,20 +98,23 @@ export class ContextMenuTrigger extends Component<ContextMenuTriggerProps> {
         this.handleContextMenu = this.handleContextMenu.bind(this);
         this.handleDocumentClick = this.handleDocumentClick.bind(this);
         this.menuElement = null;
+
+        this.state = { isMenuShow: false };
     }
 
     handleContextMenu(event: MouseEvent) {
-        event.preventDefault();
-
         if (!this.menuElement) {
             return;
         }
 
+        event.preventDefault();
         this.menuElement.style.display = "flex";
         this.menuElement.style.left = `${event.pageX}px`;
         this.menuElement.style.top = `${event.pageY}px`;
 
         menuIdToElementIdStore[this.props.menuId] = this.props.elementId;
+
+        this.setState(() => ({ isMenuShow: true }));
     }
 
     handleDocumentClick() {
@@ -112,12 +123,14 @@ export class ContextMenuTrigger extends Component<ContextMenuTriggerProps> {
         }
 
         this.menuElement.style.display = "none";
+
+        this.setState(() => ({ isMenuShow: false }));
     }
 
     componentDidMount() {
         const { menuId } = this.props;
 
-        this.menuElement = document.getElementById(menuId) as HTMLElement;
+        this.menuElement = document.getElementById(menuId);
         document.addEventListener("click", this.handleDocumentClick, true);
         document.addEventListener(
             "contextmenu",
@@ -141,7 +154,7 @@ export class ContextMenuTrigger extends Component<ContextMenuTriggerProps> {
                 onContextMenu={this.handleContextMenu}
                 elementHeight={this.props.height}
             >
-                {this.props.children}
+                {this.props.children(this.state.isMenuShow)}
             </Trigger>
         );
     }

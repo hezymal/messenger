@@ -1,8 +1,8 @@
 import React, {
     Children,
     PureComponent,
-    ReactNode,
     RefCallback,
+    ReactNode,
     PropsWithChildren,
     cloneElement,
     isValidElement,
@@ -209,21 +209,40 @@ export class Grid extends PureComponent<GridProps> {
     }
 
     static createCellsStatesFromProps(props: PropsWithChildren<GridProps>) {
-        return Children.map<CellState, ReactNode>(props.children, (cell) => {
-            if (!isValidElement(cell)) {
-                throw new Error(`Bad child: ${cell}`);
-            }
+        const cells = Children.map(props.children, (node) => {
+            return Grid.createCellState(props, node);
+        });
 
-            const cellProps: CellPropsWithInjection = {
-                ...cell.props,
-                sizeType: cell.props.sizeType || Cell.defaultProps!.sizeType,
-                border: cell.props.border || Cell.defaultProps!.border,
-                padding: cell.props.padding || Cell.defaultProps!.padding,
-                injectionProps: Grid.getInjectionProps(props),
-            };
+        return (cells || []).filter((node) => !!node);
+    }
 
-            return new CellState(cellProps);
-        }) as CellState[];
+    static createCellState(
+        props: PropsWithChildren<GridProps>,
+        node: ReactNode
+    ) {
+        if (!isValidElement(node)) {
+            return null;
+        }
+
+        const cellProps: CellPropsWithInjection = {
+            ...node.props,
+            sizeType: node.props.sizeType || Cell.defaultProps!.sizeType,
+            border: node.props.border || Cell.defaultProps!.border,
+            padding: node.props.padding || Cell.defaultProps!.padding,
+            injectionProps: Grid.getInjectionProps(props),
+        };
+
+        return new CellState(cellProps);
+    }
+
+    addCellState(index: number, node: ReactNode) {
+        const cell = Grid.createCellState(this.props, node);
+        if (!cell) {
+            return false;
+        }
+
+        this.cells[index] = cell;
+        return true;
     }
 
     setElementToCellState(index: number, element: HTMLDivElement | null) {
@@ -277,9 +296,13 @@ export class Grid extends PureComponent<GridProps> {
     renderChildren() {
         const injectionProps = Grid.getInjectionProps(this.props);
 
-        return Children.map(this.props.children, (cell, index) => {
-            if (!isValidElement(cell)) {
-                throw new Error(`Bad child: ${cell}`);
+        return Children.map(this.props.children, (node, index) => {
+            if (!isValidElement(node)) {
+                return node;
+            }
+
+            if (!this.cells[index] && !this.addCellState(index, node)) {
+                return node;
             }
 
             const handleElementRef: RefCallback<HTMLDivElement> = (element) =>
@@ -288,7 +311,7 @@ export class Grid extends PureComponent<GridProps> {
             const handleResizerRef: RefCallback<HTMLDivElement> = (element) =>
                 this.setResizerToCellState(index, element);
 
-            return cloneElement(cell, {
+            return cloneElement(node, {
                 injectionProps,
                 elementRef: handleElementRef,
                 resizerRef: handleResizerRef,

@@ -65,7 +65,7 @@ const AutoScrollableBlock: React.FC = ({ children }) => {
 
         const handleResize = debounce(() => {
             withScroll.scrollTop = withScroll.scrollHeight;
-        }, 1000);
+        }, 200);
 
         const noScrollObserver = new ResizeObserver(handleResize);
         noScrollObserver.observe(noScroll);

@@ -5,11 +5,13 @@ import { pt, colors } from "design/styles";
 
 interface MenuItemProps {
     selected?: boolean;
+    highlighted?: boolean;
     onClick?: () => void;
 }
 
 interface ItemBlockProps {
     selected: boolean;
+    highlighted: boolean;
 }
 
 const MenuBlock = styled.ul`
@@ -27,6 +29,12 @@ const ItemBlock = styled.li<ItemBlockProps>`
     }
 
     ${(props) =>
+        props.highlighted &&
+        css`
+            background-color: ${colors.grey.light2};
+        `}
+
+    ${(props) =>
         props.selected &&
         css`
             cursor: default;
@@ -42,11 +50,13 @@ export const Menu: React.FC = ({ children }) => {
 export const MenuItem: React.FC<MenuItemProps> = ({
     children,
     selected = false,
+    highlighted = false,
     onClick,
 }) => {
     return (
         <ItemBlock
             selected={selected}
+            highlighted={highlighted}
             onClick={!selected ? onClick : undefined}
         >
             {children}

@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, KeyboardEventHandler } from "react";
 
 import {
     ContextMenu,
@@ -8,18 +8,20 @@ import {
 import { Menu, MenuItem } from "design/components/Menu";
 import { Cell, Grid } from "design/components/FluidGrid";
 import { LinearSpinner } from "design/components/LinearSpinner";
-import { InputWithButton } from "design/components/InputWithButton";
 import { Group, GroupId } from "logic/group";
+import { Input } from "design/components/Input";
 
 interface Props {
     selectedGroupId: GroupId;
     groups: Group[];
     isLoading: boolean;
     newGroupTitle: string;
+    showNewGroupInput: boolean;
     onGroupSelect: (groupId: GroupId) => void;
     onNewGroupTitleChange: (newTitle: string) => void;
     onNewGroupSubmit: () => void;
     onGroupRemove: (groupId: GroupId) => void;
+    onAddGroup: () => void;
 }
 
 export const Groups: React.VFC<Props> = ({
@@ -27,11 +29,19 @@ export const Groups: React.VFC<Props> = ({
     groups,
     isLoading,
     newGroupTitle,
+    showNewGroupInput,
     onGroupSelect,
     onNewGroupTitleChange,
     onNewGroupSubmit,
     onGroupRemove,
+    onAddGroup,
 }) => {
+    const handleNewGroupTitleKeyDown: KeyboardEventHandler = (event) => {
+        if (event.key === "Enter") {
+            onNewGroupSubmit();
+        }
+    };
+
     return (
         <Fragment>
             <ContextMenuTrigger
@@ -39,44 +49,57 @@ export const Groups: React.VFC<Props> = ({
                 elementId="groups"
                 height={100}
             >
-                <Grid direction="vertical">
-                    <Cell sizeType="content" border={false}>
-                        <Menu>
-                            {groups.map((group) => (
-                                <ContextMenuTrigger
-                                    key={group.id}
-                                    menuId="context-menu-groups-item"
-                                    elementId={group.id}
-                                >
-                                    <MenuItem
-                                        selected={group.id === selectedGroupId}
-                                        onClick={() => onGroupSelect(group.id)}
+                {() => (
+                    <Grid direction="vertical">
+                        <Cell sizeType="content" border={false}>
+                            <Menu>
+                                {groups.map((group) => (
+                                    <ContextMenuTrigger
+                                        key={group.id}
+                                        menuId="context-menu-groups-item"
+                                        elementId={group.id}
                                     >
-                                        {group.title}
-                                    </MenuItem>
-                                </ContextMenuTrigger>
-                            ))}
-                            <LinearSpinner show={isLoading} />
-                        </Menu>
-                    </Cell>
-                    <Cell padding>
-                        <InputWithButton
-                            buttonTitle="Add"
-                            placeholder="New group title..."
-                            value={newGroupTitle}
-                            onChange={onNewGroupTitleChange}
-                            onSubmit={onNewGroupSubmit}
-                        />
-                    </Cell>
-                </Grid>
+                                        {(isMenuShow) => (
+                                            <MenuItem
+                                                selected={
+                                                    group.id === selectedGroupId
+                                                }
+                                                highlighted={isMenuShow}
+                                                onClick={() =>
+                                                    onGroupSelect(group.id)
+                                                }
+                                            >
+                                                {group.title}
+                                            </MenuItem>
+                                        )}
+                                    </ContextMenuTrigger>
+                                ))}
+                                <LinearSpinner show={isLoading} />
+                            </Menu>
+                        </Cell>
+                        {showNewGroupInput && (
+                            <Cell>
+                                <Input
+                                    theme="plat"
+                                    autoFocus
+                                    placeholder="Type name..."
+                                    value={newGroupTitle}
+                                    onChange={onNewGroupTitleChange}
+                                    onKeyDown={handleNewGroupTitleKeyDown}
+                                    onBlur={onNewGroupSubmit}
+                                />
+                            </Cell>
+                        )}
+                    </Grid>
+                )}
             </ContextMenuTrigger>
             <ContextMenu id="context-menu-groups">
-                <ContextMenuItem iconType="plus" onSelect={() => {}}>
+                <ContextMenuItem iconType="plus" onSelect={() => onAddGroup()}>
                     Add
                 </ContextMenuItem>
             </ContextMenu>
             <ContextMenu id="context-menu-groups-item">
-                <ContextMenuItem iconType="plus" onSelect={() => {}}>
+                <ContextMenuItem iconType="plus" onSelect={() => onAddGroup()}>
                     Add
                 </ContextMenuItem>
                 <ContextMenuItem
