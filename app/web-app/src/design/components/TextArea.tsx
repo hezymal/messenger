@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { pt } from "design/styles";
 
 interface Props {
+    className?: string;
     value?: string;
     placeholder?: string;
     height?: number;
@@ -15,7 +16,7 @@ interface ElementProps {
 }
 
 const Element = styled.textarea<ElementProps>`
-    width: 100%;
+    display: block;
     height: ${({ elementHeight }) => (elementHeight !== undefined ? `${elementHeight}%` : "auto")};
     border: none;
     resize: none;
@@ -29,6 +30,7 @@ const Element = styled.textarea<ElementProps>`
 `;
 
 export const TextArea: React.VFC<Props> = ({
+    className,
     placeholder,
     value,
     height,
@@ -37,6 +39,7 @@ export const TextArea: React.VFC<Props> = ({
 }) => {
     return (
         <Element
+            className={className}
             placeholder={placeholder}
             value={value}
             elementHeight={height}

@@ -17,15 +17,17 @@ type ChangeHandler = ChangeEventHandler<HTMLTextAreaElement>;
 type KeyboardHandler = KeyboardEventHandler<HTMLTextAreaElement>;
 
 const Block = styled.div`
-    position: relative;
     border: none;
     height: 100%;
+    display: flex;
 `;
 
 const Controls = styled(Group)`
-    position: absolute;
-    top: ${pt(1)};
-    right: ${pt(1)};
+    margin: ${pt(1)};
+`;
+
+const StyledTextArea = styled(TextArea)`
+    width: calc(100% - ${pt(7)});
 `;
 
 export const InputMessage: React.FC<Props> = ({
@@ -45,7 +47,7 @@ export const InputMessage: React.FC<Props> = ({
 
     return (
         <Block>
-            <TextArea
+            <StyledTextArea
                 placeholder="Type message..."
                 value={text}
                 height={100}
@@ -60,12 +62,13 @@ export const InputMessage: React.FC<Props> = ({
                     title="Send message (Ctrl + Enter)"
                     onClick={onSubmit}
                 />
-                <IconButton
+                {/* TODO: добавить файлы */}
+                {/* <IconButton
                     size="square-lg"
                     leftIcon="file"
                     title="Add file"
                     onClick={() => {}}
-                />
+                /> */}
             </Controls>
         </Block>
     );

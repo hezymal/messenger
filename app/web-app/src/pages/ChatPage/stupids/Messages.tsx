@@ -11,7 +11,7 @@ interface Props {
     isLoading: boolean;
 }
 
-interface ItemProps {
+interface BubbleProps {
     owner: MessageOwner;
 }
 
@@ -21,28 +21,30 @@ const Block = styled.div`
     height: 100%;
 `;
 
-const Bubble = styled.div`
-    background-color: ${colors.grey.light2};
+const Bubble = styled.div<BubbleProps>`
     border-radius: ${borders.radius.default}px;
     margin: 0 0 ${pt(1)} 0;
     padding: ${pt(0.5)} ${pt(1)};
+
+    ${({ owner }) => {
+        if (owner === "self") {
+            return css`
+                background-color: ${colors.grey.light3};
+            `;
+        }
+
+        return `
+            background-color: ${colors.grey.light2};
+        `;
+    }}
 `;
 
 const Text = styled.div`
     white-space: pre-wrap;
 `;
 
-const Item = styled.div<ItemProps>`
+const Item = styled.div`
     display: flex;
-
-    ${({ owner }) => {
-        if (owner === "self") {
-            return css`
-                text-align: right;
-                justify-content: flex-end;
-            `;
-        }
-    }}
 
     &:last-child {
         ${Bubble} {
@@ -86,8 +88,8 @@ export const Messages: React.VFC<Props> = ({ messages, isLoading }) => {
     return (
         <AutoScrollableBlock>
             {messages.map((message) => (
-                <Item key={message.id} owner={message.owner}>
-                    <Bubble>
+                <Item key={message.id}>
+                    <Bubble owner={message.owner}>
                         <Text>{message.text}</Text>
                     </Bubble>
                 </Item>
