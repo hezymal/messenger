@@ -1,16 +1,19 @@
-using Messenger.MessageApi.Services;
-using Messenger.MessageApi.Database;
+using Messenger.IdentityApi.Services;
+using Messenger.IdentityApi.Database;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // TODO: вынести в appsettings.json
-builder.Services.AddDbContext<MessageDbContext>(options => options.UseSqlite("Filename=IdentityApi.db"));
+builder.Services.AddDbContext<IdentityDbContext>(options => options.UseSqlite("Filename=IdentityApi.db"));
 
-builder.Services.AddScoped<MessageService>();
+builder.Services.AddScoped<AccountService>();
+builder.Services.AddScoped<EmailService>();
+builder.Services.AddScoped<UserService>();
 
 var app = builder.Build();
 
@@ -22,7 +25,7 @@ if (app.Environment.IsDevelopment())
 
 using (var scope = app.Services.CreateScope())
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<MessageDbContext>();
+    var dbContext = scope.ServiceProvider.GetRequiredService<IdentityDbContext>();
     dbContext.Database.EnsureCreated();
 }
 
