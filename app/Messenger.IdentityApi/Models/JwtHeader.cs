@@ -2,10 +2,12 @@ namespace Messenger.IdentityApi.Models;
 
 public class JwtHeader
 {
-    public string Algorithm { get; set; }
+    public const string ALGORITHM_HS256 = "HS256";
 
-    public JwtHeader(string algorithm)
+    public string alg { get; set; }
+
+    public JwtHeader(string alg = ALGORITHM_HS256)
     {
-        Algorithm = algorithm;
+        this.alg = alg;
     }
 }
