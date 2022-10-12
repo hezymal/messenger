@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 
-import { Groups } from "../stupids/Groups";
-import * as routes from "navigation/routes";
+import { routes } from "navigation/routes";
 import { GroupId } from "logic/group";
 import groups from "state/groups";
+
+import { Groups } from "../stupids/Groups";
 
 interface Props {
     selected: GroupId;

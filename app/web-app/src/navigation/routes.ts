@@ -1,5 +1,16 @@
 import { GroupId } from "logic/group";
 
-export const chat = () => `/chat`;
+const landing = () => "/landing";
 
-export const chatGroupById = (groupId: GroupId) => `/chat/groups/${groupId}`;
+const register = () => "/register";
+
+const chat = () => `/chat`;
+
+const chatGroupById = (groupId: GroupId) => `/chat/groups/${groupId}`;
+
+export const routes = {
+    landing,
+    chat,
+    chatGroupById,
+    register,
+};
