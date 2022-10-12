@@ -11,6 +11,7 @@ export interface InputProps {
     width?: number;
     autoFocus?: InputHTMLAttributes<HTMLInputElement>["autoFocus"];
     placeholder?: InputHTMLAttributes<HTMLInputElement>["placeholder"];
+    type?: InputHTMLAttributes<HTMLInputElement>["type"];
     onChange: (value: string) => void;
     onKeyDown?: InputHTMLAttributes<HTMLInputElement>["onKeyDown"];
     onBlur?: InputHTMLAttributes<HTMLInputElement>["onBlur"];
@@ -54,7 +55,7 @@ const getPlatStyles = (props: ElementProps) => {
 };
 
 const Element = styled.input<ElementProps>`
-    width: ${(props) => props.width}%;
+    width: ${(props) => props.elementWidth}%;
     resize: none;
     font: inherit;
     line-height: inherit;
@@ -64,7 +65,7 @@ const Element = styled.input<ElementProps>`
         outline: none;
     }
 
-    ${(props: ElementProps) => {
+    ${(props) => {
         switch (props.theme) {
             case "normal":
                 return getNormalStyles(props);

@@ -1,7 +1,17 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 
 import { borders, colors, pt } from "design/styles";
+
+const blinkAnimation = keyframes`
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+`;
 
 const StyledLogo = styled.a`
     color: ${colors.black.base};
@@ -9,11 +19,12 @@ const StyledLogo = styled.a`
     align-items: center;
     font-weight: 300;
     font-size: 1.1em;
-    padding: ${pt(0.5)} ${pt(1)};
+    padding: ${pt(0.5)} ${pt(3)} ${pt(0.5)} ${pt(1)};
     border-radius: ${borders.radius.default}px;
     text-transform: uppercase;
     text-decoration: none;
     color: ${colors.black.base};
+    position: relative;
 
     &:before {
         content: ">";
@@ -21,16 +32,19 @@ const StyledLogo = styled.a`
         font-size: 1.4em;
         font-weight: 900;
         font-family: monospace;
-        margin-right: ${pt(1)};
+        margin-top: -2px;
+        margin-right: 6px;
     }
 
     &:after {
-        content: "_";
-        color: ${colors.pink.base};
-        font-size: 1.4em;
-        font-weight: 900;
-        font-family: monospace;
-        margin-left: ${pt(0.25)};
+        animation: ${blinkAnimation} 0.6s ease-in-out infinite;
+        background-color: ${colors.pink.base};
+        content: "";
+        left: calc(100% - 18px);
+        bottom: 4px;
+        position: absolute;
+        width: 12px;
+        height: 3px;
     }
 `;
 
