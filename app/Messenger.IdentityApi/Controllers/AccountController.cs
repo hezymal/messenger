@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Messenger.IdentityApi.Domains;
 using Messenger.IdentityApi.Models;
 using Messenger.IdentityApi.Services;
 
@@ -16,17 +15,17 @@ public class AccountController : ControllerBase
         this.accountService = accountService;
     }
 
-    [HttpPost("registry")]
-    public async Task<IActionResult> Registry(RegistryRequest request)
+    [HttpPost("sign-up")]
+    public async Task<IActionResult> SignUp(SignUpRequest request)
     {
-        await accountService.Registry(request.Email, request.Password);
+        await accountService.SignUp(request.Email, request.Password);
         return Ok();
     }
 
-    [HttpPost("login")]
-    public Task<string> Login(LoginRequest request)
+    [HttpPost("sign-in")]
+    public Task<string> SignIn(SignInRequest request)
     {
-        return accountService.Login(request.Email, request.Password);
+        return accountService.SignIn(request.Email, request.Password);
     }
 
     [HttpPost("password-reset-token")]

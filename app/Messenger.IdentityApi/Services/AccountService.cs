@@ -3,7 +3,6 @@ using Messenger.IdentityApi.Domains;
 using Messenger.IdentityApi.Exceptions;
 using Messenger.IdentityApi.Helpers;
 using Messenger.IdentityApi.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace Messenger.IdentityApi.Services;
 
@@ -25,7 +24,7 @@ public class AccountService
         this.userService = userService;
     }
 
-    public async Task Registry(string email, string password)
+    public async Task SignUp(string email, string password)
     {
         var user = new User { Email = email };
         var userId = await userService.AddUser(user);
@@ -37,7 +36,7 @@ public class AccountService
         await userService.AddUserPassword(userPassword);
     }
 
-    public async Task<string> Login(string email, string password)
+    public async Task<string> SignIn(string email, string password)
     {
         var user = await userService.GetUserByEmail(email);
         if (user == null)

@@ -1,6 +1,5 @@
 using Messenger.IdentityApi.Database;
 using Messenger.IdentityApi.Domains;
-using Messenger.IdentityApi.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Messenger.IdentityApi.Services;

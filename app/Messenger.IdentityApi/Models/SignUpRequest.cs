@@ -1,6 +1,6 @@
 namespace Messenger.IdentityApi.Models;
 
-public class LoginRequest
+public class SignUpRequest
 {
     public string Email { get; set; }
 

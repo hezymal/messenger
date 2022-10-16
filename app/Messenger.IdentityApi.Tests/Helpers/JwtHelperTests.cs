@@ -11,8 +11,11 @@ public class JwtHelperTests
         var header = new JwtHeader();
         var data = new Data { sub = "1234567890", name = "John Doe", iat = 1516239022 };
         var signatureSecret = "hello";
-        var token = JwtHelper.Encode(header, data, signatureSecret);
-        Assert.Equal(token, "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.LeoBIKpcbFjZFGqgbrT33xI00dGUXkbbf7xgRL1IQ-I");
+
+        var actual = JwtHelper.Encode(header, data, signatureSecret);
+        var expected = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.LeoBIKpcbFjZFGqgbrT33xI00dGUXkbbf7xgRL1IQ-I";
+
+        Assert.Equal(expected, actual);
     }
 
     private class Data
